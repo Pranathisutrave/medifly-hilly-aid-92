@@ -1,23 +1,22 @@
 
 import { Link } from "react-router-dom";
 import { Facebook, Twitter, Instagram, Mail, Phone, MapPin } from "lucide-react";
+import MedflyLogo from "./MedflyLogo";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white pt-12 pb-8">
+    <footer className="bg-gray-900 text-white pt-16 pb-8">
       <div className="medfly-container">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="md:col-span-1">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="bg-white rounded-full w-10 h-10 flex items-center justify-center">
-                <span className="text-medfly-blue font-bold text-xl">M</span>
-              </div>
-              <span className="text-xl font-bold text-white">MediFly</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+          {/* Company Info */}
+          <div>
+            <Link to="/" className="inline-block mb-6">
+              <MedflyLogo className="filter brightness-0 invert" />
             </Link>
-            <p className="mt-4 text-gray-400">
-              Delivering essential medicines to remote locations through innovative drone technology.
+            <p className="text-gray-400 mb-6">
+              Delivering essential medicines to remote and hilly areas using drone technology, saving lives when every minute counts.
             </p>
-            <div className="flex space-x-4 mt-6">
+            <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 <Facebook size={20} />
               </a>
@@ -29,79 +28,70 @@ const Footer = () => {
               </a>
             </div>
           </div>
-          
+
+          {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/" className="text-gray-400 hover:text-white transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link to="/services" className="text-gray-400 hover:text-white transition-colors">
-                  Services
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-gray-400 hover:text-white transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/diagnosis" className="text-gray-400 hover:text-white transition-colors">
-                  AI Diagnosis
-                </Link>
-              </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Legal</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/terms" className="text-gray-400 hover:text-white transition-colors">
-                  Terms of Service
-                </Link>
-              </li>
-              <li>
-                <Link to="/cookies" className="text-gray-400 hover:text-white transition-colors">
-                  Cookie Policy
-                </Link>
-              </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
+            <h3 className="text-lg font-semibold mb-6">Quick Links</h3>
             <ul className="space-y-3">
-              <li className="flex items-start space-x-3">
-                <MapPin className="text-medfly-blue flex-shrink-0 mt-1" size={18} />
-                <span className="text-gray-400">
-                  123 Medical Drive, Hillside City, HC 12345
-                </span>
+              <li>
+                <Link to="/about" className="text-gray-400 hover:text-white transition-colors">About Us</Link>
               </li>
-              <li className="flex items-center space-x-3">
-                <Phone className="text-medfly-blue flex-shrink-0" size={18} />
+              <li>
+                <Link to="/services" className="text-gray-400 hover:text-white transition-colors">Our Services</Link>
+              </li>
+              <li>
+                <Link to="/diagnosis" className="text-gray-400 hover:text-white transition-colors">AI Diagnosis</Link>
+              </li>
+              <li>
+                <Link to="/coverage" className="text-gray-400 hover:text-white transition-colors">Coverage Areas</Link>
+              </li>
+              <li>
+                <Link to="/faqs" className="text-gray-400 hover:text-white transition-colors">FAQs</Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h3 className="text-lg font-semibold mb-6">Legal</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
+              </li>
+              <li>
+                <Link to="/terms" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link>
+              </li>
+              <li>
+                <Link to="/disclaimer" className="text-gray-400 hover:text-white transition-colors">Medical Disclaimer</Link>
+              </li>
+              <li>
+                <Link to="/licensing" className="text-gray-400 hover:text-white transition-colors">Licensing</Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h3 className="text-lg font-semibold mb-6">Contact Us</h3>
+            <ul className="space-y-3">
+              <li className="flex items-start">
+                <MapPin size={20} className="text-medfly-blue mr-3 mt-1 flex-shrink-0" />
+                <span className="text-gray-400">123 Drone Street, Tech City, 12345</span>
+              </li>
+              <li className="flex items-center">
+                <Phone size={20} className="text-medfly-blue mr-3 flex-shrink-0" />
                 <span className="text-gray-400">+1 (555) 123-4567</span>
               </li>
-              <li className="flex items-center space-x-3">
-                <Mail className="text-medfly-blue flex-shrink-0" size={18} />
+              <li className="flex items-center">
+                <Mail size={20} className="text-medfly-blue mr-3 flex-shrink-0" />
                 <span className="text-gray-400">contact@medifly.com</span>
               </li>
             </ul>
           </div>
         </div>
-        
-        <div className="border-t border-gray-800 mt-12 pt-8">
-          <p className="text-gray-400 text-center text-sm">
-            &copy; {new Date().getFullYear()} MediFly. All rights reserved.
-          </p>
+
+        <div className="pt-8 border-t border-gray-800 text-center text-gray-500 text-sm">
+          <p>&copy; {new Date().getFullYear()} MediFly. All rights reserved.</p>
         </div>
       </div>
     </footer>

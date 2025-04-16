@@ -1,9 +1,8 @@
-
 import { useState } from "react";
 import { 
   Thermometer, 
   Droplets, 
-  Lungs, 
+  Wind, 
   HeartPulse, 
   Pill, 
   Loader2,
@@ -17,73 +16,85 @@ const diseasesDatabase = [
     name: "Common Cold",
     symptoms: ["cough", "runny nose", "sore throat", "sneezing", "mild fever", "headache"],
     treatment: "Rest, fluids, over-the-counter cold medications.",
-    severity: "Mild"
+    severity: "Mild",
+    description: "A viral infection of the upper respiratory tract that typically resolves within 7-10 days."
   },
   {
     name: "Influenza (Flu)",
     symptoms: ["high fever", "body aches", "fatigue", "cough", "sore throat", "headache", "chills"],
     treatment: "Rest, fluids, antiviral medications if diagnosed early.",
-    severity: "Moderate"
+    severity: "Moderate",
+    description: "A contagious respiratory illness caused by influenza viruses that infect the nose, throat, and lungs."
   },
   {
     name: "COVID-19",
     symptoms: ["fever", "dry cough", "fatigue", "loss of taste", "loss of smell", "shortness of breath", "body aches"],
     treatment: "Rest, fluids, isolation, monitor symptoms. Seek medical care if breathing difficulties occur.",
-    severity: "Moderate to Severe"
+    severity: "Moderate to Severe",
+    description: "A respiratory disease caused by the SARS-CoV-2 virus, which can range from mild to severe symptoms."
   },
   {
     name: "Pneumonia",
     symptoms: ["high fever", "cough with phlegm", "shortness of breath", "rapid breathing", "chest pain", "fatigue"],
     treatment: "Antibiotics (for bacterial pneumonia), rest, fluids, oxygen therapy if needed.",
-    severity: "Moderate to Severe"
+    severity: "Moderate to Severe",
+    description: "An infection that inflames the air sacs in one or both lungs, which may fill with fluid."
   },
   {
     name: "Bronchitis",
     symptoms: ["persistent cough", "cough with mucus", "wheezing", "chest discomfort", "fatigue", "mild fever"],
     treatment: "Rest, increased fluid intake, bronchodilators, avoiding irritants.",
-    severity: "Moderate"
+    severity: "Moderate",
+    description: "Inflammation of the lining of bronchial tubes, which carry air to and from the lungs."
   },
   {
     name: "Asthma",
     symptoms: ["wheezing", "shortness of breath", "chest tightness", "coughing", "trouble sleeping"],
     treatment: "Inhalers, bronchodilators, avoiding triggers, long-term control medications.",
-    severity: "Mild to Severe"
+    severity: "Mild to Severe",
+    description: "A condition in which airways narrow and swell and may produce extra mucus, making breathing difficult."
   },
   {
     name: "Hypertension",
     symptoms: ["headache", "shortness of breath", "nosebleeds", "dizziness", "chest pain"],
     treatment: "Medication, lifestyle changes, regular monitoring.",
-    severity: "Chronic"
+    severity: "Chronic",
+    description: "A condition in which the force of blood against artery walls is consistently too high."
   },
   {
     name: "Diabetes",
     symptoms: ["increased thirst", "frequent urination", "extreme hunger", "unexplained weight loss", "fatigue", "blurred vision"],
     treatment: "Insulin therapy, blood sugar monitoring, diet management, exercise.",
-    severity: "Chronic"
+    severity: "Chronic",
+    description: "A group of diseases that result in too much sugar in the blood due to problems with insulin production or function."
   },
   {
     name: "Migraine",
     symptoms: ["severe headache", "throbbing pain", "nausea", "vomiting", "light sensitivity", "sound sensitivity"],
     treatment: "Pain relievers, rest in dark quiet room, preventive medications.",
-    severity: "Moderate"
+    severity: "Moderate",
+    description: "A headache disorder characterized by recurrent headaches that are moderate to severe, often with associated symptoms."
   },
   {
     name: "Gastroenteritis",
     symptoms: ["diarrhea", "nausea", "vomiting", "abdominal cramps", "mild fever", "headache"],
     treatment: "Fluid replacement, rest, gradual reintroduction of food.",
-    severity: "Mild to Moderate"
+    severity: "Mild to Moderate",
+    description: "Inflammation of the stomach and intestines, typically resulting from bacterial or viral infections."
   },
   {
     name: "Urinary Tract Infection",
     symptoms: ["burning urination", "frequent urination", "cloudy urine", "strong-smelling urine", "pelvic pain"],
     treatment: "Antibiotics, increased fluid intake.",
-    severity: "Mild to Moderate"
+    severity: "Mild to Moderate",
+    description: "An infection in any part of the urinary system, including kidneys, bladder, ureters, and urethra."
   },
   {
     name: "Arthritis",
     symptoms: ["joint pain", "stiffness", "swelling", "decreased range of motion", "redness around joints"],
     treatment: "Pain relievers, physical therapy, lifestyle adjustments, anti-inflammatory medications.",
-    severity: "Chronic"
+    severity: "Chronic",
+    description: "Inflammation of one or more joints, causing pain and stiffness that can worsen with age."
   }
 ];
 
@@ -96,7 +107,7 @@ const symptomCategories = [
   },
   {
     name: "Respiratory",
-    icon: <Lungs className="h-5 w-5" />,
+    icon: <Wind className="h-5 w-5" />,
     symptoms: ["cough", "shortness of breath", "sore throat", "runny nose", "sneezing", "wheezing", "chest pain", "congestion"]
   },
   {
@@ -173,37 +184,46 @@ const DiagnosisForm = () => {
       if (filteredResults.length > 0) {
         const topResult = filteredResults[0];
         
-        // Only provide a confident diagnosis if the match is strong
-        if (topResult.matchScore > 0.5) {
+        // Provide a more definitive diagnosis based on the match score
+        if (topResult.matchScore > 0.4) {
           setDiagnosisResult({
             disease: topResult.name,
             confidence: Math.round(topResult.matchScore * 100),
-            description: `Based on your symptoms, especially ${topResult.matchedSymptoms.join(", ")}.`,
+            description: topResult.description,
+            detailedDescription: `Based on your symptoms (${topResult.matchedSymptoms.join(", ")}), you likely have ${topResult.name}.`,
             treatment: topResult.treatment,
             severity: topResult.severity,
             alternatives: filteredResults.slice(1, 3).map(r => ({
               name: r.name,
-              confidence: Math.round(r.matchScore * 100)
+              confidence: Math.round(r.matchScore * 100),
+              description: r.description
             }))
           });
         } else {
-          // If match is weak, show possible conditions but not a definitive diagnosis
+          // Even with lower match score, provide a more definitive diagnosis but note uncertainty
           setDiagnosisResult({
-            disease: "Multiple possibilities",
-            confidence: null,
-            description: "Your symptoms could match several conditions. Please consult a healthcare professional.",
-            possibilities: filteredResults.slice(0, 3).map(r => ({
+            disease: topResult.name,
+            confidence: Math.round(topResult.matchScore * 100),
+            description: topResult.description,
+            detailedDescription: `Your symptoms suggest ${topResult.name}, though there is some uncertainty. Matching symptoms: ${topResult.matchedSymptoms.join(", ")}.`,
+            treatment: topResult.treatment,
+            severity: topResult.severity,
+            alternatives: filteredResults.slice(1, 3).map(r => ({
               name: r.name,
               confidence: Math.round(r.matchScore * 100),
-              matchingSymptoms: r.matchedSymptoms
+              description: r.description
             }))
           });
         }
       } else {
+        // If no matches, still provide a more actionable response
         setDiagnosisResult({
-          disease: "No match found",
+          disease: "Unidentified Condition",
           confidence: null,
-          description: "Your combination of symptoms doesn't clearly match our database. Please consult a healthcare professional for proper diagnosis.",
+          description: "Your symptoms don't clearly match any conditions in our database.",
+          detailedDescription: "Your specific combination of symptoms requires professional medical evaluation. Please consult a healthcare provider promptly.",
+          severity: "Unknown",
+          treatment: "Seek professional medical advice for proper diagnosis and treatment."
         });
       }
       
@@ -350,7 +370,7 @@ const DiagnosisForm = () => {
         </form>
       ) : (
         <div className="p-6">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800">Diagnosis Result</h2>
+          <h2 className="text-2xl font-bold mb-6 text-gray-800">Your Diagnosis</h2>
           
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
             <div className="flex items-center mb-4">
@@ -368,6 +388,7 @@ const DiagnosisForm = () => {
             </div>
             
             <p className="text-gray-700 mb-4">{diagnosisResult.description}</p>
+            <p className="text-gray-700 mb-4 font-medium">{diagnosisResult.detailedDescription}</p>
             
             {diagnosisResult.treatment && (
               <div className="mt-4">
@@ -386,33 +407,17 @@ const DiagnosisForm = () => {
             {diagnosisResult.alternatives && diagnosisResult.alternatives.length > 0 && (
               <div className="mt-6">
                 <h4 className="font-medium text-gray-800 mb-2">Other Possibilities:</h4>
-                <ul className="space-y-2">
+                <ul className="space-y-3">
                   {diagnosisResult.alternatives.map((alt: any, index: number) => (
-                    <li key={index} className="flex items-center justify-between">
-                      <span className="text-gray-700">{alt.name}</span>
-                      <span className="text-sm text-gray-500">{alt.confidence}% match</span>
+                    <li key={index} className="border-t pt-3">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-gray-800">{alt.name}</span>
+                        <span className="text-sm text-gray-500">{alt.confidence}% match</span>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-1">{alt.description}</p>
                     </li>
                   ))}
                 </ul>
-              </div>
-            )}
-            
-            {diagnosisResult.possibilities && (
-              <div className="mt-6">
-                <h4 className="font-medium text-gray-800 mb-2">Possible Conditions:</h4>
-                <div className="space-y-4">
-                  {diagnosisResult.possibilities.map((possibility: any, index: number) => (
-                    <div key={index} className="border-t pt-3">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-gray-800">{possibility.name}</span>
-                        <span className="text-sm text-gray-500">{possibility.confidence}% match</span>
-                      </div>
-                      <p className="text-sm text-gray-600 mt-1">
-                        Matching symptoms: {possibility.matchingSymptoms.join(", ")}
-                      </p>
-                    </div>
-                  ))}
-                </div>
               </div>
             )}
           </div>
@@ -422,7 +427,7 @@ const DiagnosisForm = () => {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-yellow-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              <p className="ml-3">This is an AI-powered preliminary analysis. For accurate diagnosis, please consult with a healthcare professional.</p>
+              <p className="ml-3">While this diagnosis is based on your symptoms, a healthcare professional should confirm it. Seek immediate medical attention for severe or worsening symptoms.</p>
             </div>
           </div>
           
@@ -439,7 +444,7 @@ const DiagnosisForm = () => {
               type="button"
               className="px-5 py-2 bg-medfly-green text-white rounded-md hover:bg-opacity-90 transition-colors"
             >
-              Schedule Consultation
+              Order Medicine
             </button>
           </div>
         </div>
